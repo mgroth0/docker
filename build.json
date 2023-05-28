@@ -1,0 +1,10 @@
+{
+  "type": "BasicJvmOnlyMod",
+  "dependencies": [
+    {
+      "type": "Project",
+      "cfg": "implementation",
+      "path": ":k:shell"
+    }
+  ]
+}
