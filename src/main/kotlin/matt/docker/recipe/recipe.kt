@@ -1,6 +1,7 @@
 package matt.docker.recipe
 
 import kotlinx.serialization.Serializable
+import matt.json.jser.oser.JavaIoSerializable
 import matt.lang.anno.SeeURL
 import matt.prim.str.joinWithNewLines
 import matt.shell.Command
@@ -11,7 +12,7 @@ import matt.shell.Shell
 sealed interface DockerRecipe
 
 @Serializable
-class DockerRecipeText(val dockerRecipe: String) : DockerRecipe
+class DockerRecipeText(val dockerRecipe: String) : DockerRecipe, JavaIoSerializable
 
 @Serializable
 class DockerStageText(val dockerStageRecipe: String)
@@ -103,16 +104,17 @@ class DockerfileStageDSL(from: DockerFrom) {
     private var previousWorkDirs = mutableListOf<String>()
 
 
+    @DockerDsl
     inner class DockerCommander : Shell<Unit> {
         override fun sendCommand(vararg args: String) {
             val command = CommandReturner.sendCommand(*args)
-            run(command)
+            this@DockerfileStageDSL.run(command)
         }
 
         fun withWorkDir(
             workdir: String? = null,
             op: DockerCommander.() -> Unit
-        ) = runCommands(workdir = workdir, op = op)
+        ) = this@DockerfileStageDSL.runCommands(workdir = workdir, op = op)
     }
 
     fun runCommands(
