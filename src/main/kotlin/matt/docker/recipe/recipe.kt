@@ -3,6 +3,7 @@ package matt.docker.recipe
 import kotlinx.serialization.Serializable
 import matt.json.jser.oser.JavaIoSerializable
 import matt.lang.anno.SeeURL
+import matt.model.code.version.JavaVersion
 import matt.prim.str.joinWithNewLines
 import matt.shell.Command
 import matt.shell.CommandReturner
@@ -16,6 +17,9 @@ class DockerRecipeText(val dockerRecipe: String) : DockerRecipe, JavaIoSerializa
 
 @Serializable
 class DockerStageText(val dockerStageRecipe: String)
+
+@Serializable
+class JvmDockerRecipe(val javaVersion: JavaVersion) : DockerRecipe
 
 @Serializable
 object ExtractDockerRecipe : DockerRecipe

@@ -4,11 +4,14 @@ import matt.lang.If
 import matt.lang.anno.SeeURL
 import matt.lang.optArray
 import matt.model.data.file.FilePath
+import matt.model.data.message.SFile
 import matt.shell.Commandable
 import matt.shell.ControlledShellProgram
 import matt.shell.Shell
 
 val <R> Shell<R>.docker get() = DockerCommand(this)
+
+const val EXTRA_DOCKER_CTX_NAME = "extra"
 
 class DockerCommand<R>(shell: Shell<R>) : ControlledShellProgram<R>(
     shell = shell,
@@ -43,6 +46,7 @@ class DockerCommand<R>(shell: Shell<R>) : ControlledShellProgram<R>(
             tag: String? = null,
             quiet: Boolean = false,
             /*squash: Boolean = false*/
+            extraContextFile: SFile? = null
         ): R =
             sendCommand(
                 this::build.name,
@@ -50,6 +54,11 @@ class DockerCommand<R>(shell: Shell<R>) : ControlledShellProgram<R>(
                 *optArray(tag) { arrayOf("-t", this) },
                 *If(quiet).then("-q"),
                 /**If(squash).then("--squash"),*/
+
+                *optArray(extraContextFile) {
+                    @SeeURL("https://stackoverflow.com/a/74185824/6596010")
+                    arrayOf("--build-context", "$EXTRA_DOCKER_CTX_NAME=${this.path}")
+                },
                 path
             )
     }
