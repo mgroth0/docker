@@ -7,6 +7,7 @@ import matt.model.code.version.JavaVersion
 import matt.prim.str.joinWithNewLines
 import matt.shell.Command
 import matt.shell.CommandReturner
+import matt.shell.DEFAULT_LINUX_PROGRAM_PATH_CONTEXT
 import matt.shell.Shell
 
 @Serializable
@@ -110,8 +111,9 @@ class DockerfileStageDSL(from: DockerFrom) {
 
     @DockerDsl
     inner class DockerCommander : Shell<Unit> {
+        override val programPathContext = DEFAULT_LINUX_PROGRAM_PATH_CONTEXT
         override fun sendCommand(vararg args: String) {
-            val command = CommandReturner.sendCommand(*args)
+            val command = CommandReturner(programPathContext = programPathContext).sendCommand(*args)
             this@DockerfileStageDSL.run(command)
         }
 
