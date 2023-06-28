@@ -10,6 +10,8 @@ import matt.shell.CommandReturner
 import matt.shell.DEFAULT_LINUX_PROGRAM_PATH_CONTEXT
 import matt.shell.Shell
 
+
+
 @Serializable
 sealed interface DockerRecipe
 
@@ -25,7 +27,7 @@ class JvmDockerRecipe(val javaVersion: JavaVersion) : DockerRecipe
 @Serializable
 object ExtractDockerRecipe : DockerRecipe
 
-const val DockerfileName = "Dockerfile"
+
 
 fun openJDKDocker(
     openJDKVersion: String,
