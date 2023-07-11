@@ -3,13 +3,13 @@ package matt.docker.recipe
 import kotlinx.serialization.Serializable
 import matt.json.jser.oser.JavaIoSerializable
 import matt.lang.anno.SeeURL
+import matt.lang.require.requireEquals
 import matt.model.code.version.JavaVersion
 import matt.prim.str.joinWithNewLines
 import matt.shell.Command
 import matt.shell.CommandReturner
 import matt.shell.DEFAULT_LINUX_PROGRAM_PATH_CONTEXT
 import matt.shell.Shell
-
 
 
 @Serializable
@@ -26,7 +26,6 @@ class JvmDockerRecipe(val javaVersion: JavaVersion) : DockerRecipe
 
 @Serializable
 object ExtractDockerRecipe : DockerRecipe
-
 
 
 fun openJDKDocker(
@@ -65,7 +64,10 @@ annotation class DockerDsl
 @DockerDsl
 class DockerfileDSL {
     private val stages = mutableListOf<DockerfileStageDSL>()
-    fun stage(from: DockerFrom, op: DockerfileStageDSL.() -> Unit) {
+    fun stage(
+        from: DockerFrom,
+        op: DockerfileStageDSL.() -> Unit
+    ) {
         stages += DockerfileStageDSL(from).apply(op)
     }
 
@@ -91,7 +93,10 @@ class DockerfileStageDSL(from: DockerFrom) {
     }
 
     @SeeURL("https://docs.docker.com/engine/reference/builder/#copy")
-    fun copy(from: String, to: String) {
+    fun copy(
+        from: String,
+        to: String
+    ) {
         lines += "COPY $from $to"
     }
 
@@ -135,7 +140,7 @@ class DockerfileStageDSL(from: DockerFrom) {
         }
         runCommand.apply(op)
         if (workdir != null) {
-            require(previousWorkDirs.removeLast() == workdir)
+            requireEquals(previousWorkDirs.removeLast(), workdir)
             if (previousWorkDirs.isEmpty()) {
                 resetWorkdir()
             } else {
